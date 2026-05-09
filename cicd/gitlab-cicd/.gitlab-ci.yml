@@ -1,0 +1,37 @@
+---
+# Own version of .gitlab-ci.yml
+
+stages:    # List stages for jobs, and their order of execution
+  - code-quality
+  - build
+  - unit-test
+  - integration-test
+  - deploy
+
+code-checks: # This job runs first to check quality of code
+  stage: code-quality
+  script:
+    - black *.py
+    #- echo "Skipping this step until pip3 and black is added to docker image"
+
+build-job: # This job runs in the build stage.
+  stage: build
+  script:
+    - python3 e-to-e.py
+
+unit-test-job: # This job runs in the test stage
+  stage: unit-test
+  script:
+    - pytest
+    # - echo "Skipping this step until pip3,black and pytest is added to docker image"
+
+integration-test-job: # This job performs integration testing.On passing, code is promoted to developer branch
+  stage: integration-test
+  script:
+    - python3 e-to-e.py
+
+deploy-job: # This job perfoms runs of code in pre-prod environment from developer branch
+  stage: deploy
+  script:
+    - echo "Run in pre-prod.. From developer branch"
+    - echo "From here code is promoted to master branch"
