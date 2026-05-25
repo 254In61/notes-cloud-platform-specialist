@@ -87,3 +87,81 @@ Logging helps you:
 
 print() gives you a messy stream with no context.
 
+## logging.basicConfig(...)
+
+This configures Python logging.
+
+## Logging Basics
+
+Python logging levels:
+
+| Level    | Purpose              |
+| -------- | -------------------- |
+| DEBUG    | Detailed debugging   |
+| INFO     | Normal operations    |
+| WARNING  | Something suspicious |
+| ERROR    | Failure              |
+| CRITICAL | Major failure        |
+
+## logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
+Setting the format of the logs.
+
+level=logging.INFO  : Means Show logs at :
+
+* INFO
+* WARNING
+* ERROR
+* CRITICAL
+
+But NOT:
+
+* DEBUG
+
+format="%(levelname)s: %(message)s" : Determines the log formatting.
+
+Example:
+logger.error("Queue failed")
+
+Output:
+ERROR: Queue failed
+
+## Common Logging Format Variables
+
+| Variable        | Meaning        |
+| --------------- | -------------- |
+| `%(levelname)s` | INFO/ERROR/etc |
+| `%(message)s`   | Actual message |
+| `%(asctime)s`   | Timestamp      |
+| `%(name)s`      | Logger name    |
+| `%(filename)s`  | File name      |
+| `%(lineno)d`    | Line number    |
+
+## Example format for production
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s"
+)
+
+Example:
+
+2026-05-20 10:12:01 INFO activity_checker: Queue active
+
+## Architectural Patterns
+
+basicConfig() should usually only be called once :
+
+* in the main entrypoint
+* NOT inside libraries/modules.
+
+Why? Because imported modules should not control global logging config.
+
+Example : 
+
+import logging
+from mymodule import do_work
+
+logging.basicConfig(level=logging.INFO)
+
+do_work()
